@@ -1,0 +1,42 @@
+[
+  {
+    "entity_type_key": "ORG",
+    "id_type_key": "Aria_Acct",
+    "id_value": "Aria2",
+    "qualifier1_key": "CURRENCY",
+    "qualifier1_value": "JPY",
+    "qualifier2_key": "LEGALENT",
+    "qualifier2_value": "LLC",
+    "start_date": "2016-11-20",
+    "end_date": "2017-03-14",
+    "descriptor1": "HighPriority",
+    "descriptor2": "Hot",
+    "descriptor3": "IncludePrint",
+    "descriptor4": "OnlineDistribution",
+    "descriptor5": "Test1",
+    "descriptor6": "test21",
+    "descriptor7": "test4",
+    "descriptor8": "test7",
+    "descriptor9": "test6"
+  },
+  {
+    "entity_type_key": "ORG",
+    "id_type_key": "Aria_Acct",
+    "id_value": "Aria1",
+    "qualifier1_key": "CURRENCY",
+    "qualifier1_value": "USD",
+    "qualifier2_key": "LEGALENT",
+    "qualifier2_value": "LLC",
+    "start_date": "2016-11-20",
+    "end_date": "2017-03-14",
+    "descriptor1": "HighPriority",
+    "descriptor2": "Hot",
+    "descriptor3": "IncludePrint",
+    "descriptor4": "OnlineDistribution",
+    "descriptor5": "Test1",
+    "descriptor6": "test21",
+    "descriptor7": "test4",
+    "descriptor8": "test7",
+    "descriptor9": "test6"
+  }
+]

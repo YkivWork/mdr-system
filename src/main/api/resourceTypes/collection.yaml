@@ -1,0 +1,18 @@
+get?:
+  responses: 
+    200:
+      body: 
+        application/json:
+          example: <<get200RespExample>>
+          schema: <<get200RespSchema>>
+post?:
+  body: 
+    application/json:
+      example: <<postReqExample>>
+      schema: <<postReqSchema>>
+  responses: 
+    201:
+      body: 
+        application/json:
+          example: |
+            {"message": "Created successfully a new <<resourcePathName | !singularize>>"}

@@ -1,0 +1,106 @@
+#%RAML 0.8
+baseUri: https://mocksvc.mulesoft.com/mocks/df19a320-c5cd-498e-a69f-4b2088901ec0
+title: Master Data Repository API
+version: 1.0
+
+documentation:
+  - title: Home
+    content: !include docs/home.md
+
+resourceTypes:
+  - collection: !include resourceTypes/collection.yaml
+  - member: !include resourceTypes/member.yaml
+      
+schemas:
+  - entity: !include schemas/entity-schema.json
+  - entities: !include schemas/entities-schema.json
+  - associate: !include schemas/associate-post-schema.json
+  - associates: !include schemas/associates-get-result-schema.json
+ 
+/health-check:
+  get:
+    description: A health check.
+
+/entities:
+  type: 
+    collection:
+      get200RespExample: !include examples/entities-example.json
+      get200RespSchema: entities
+      postReqExample: !include examples/entity-example.json
+      postReqSchema: entity 
+  post:         
+  /associate:
+    type:
+      collection:
+        get200RespExample: !include examples/associates-get-result-example.json
+        get200RespSchema: associates
+        postReqExample: !include examples/associate-post-example.json
+        postReqSchema: associate
+    get:
+      queryParameters:
+        entity_type_key:
+          type: string
+          required: true
+          example: "ORG"
+        id_type_key:
+          type: string
+          required: true
+          example: "SFDC_Acct"
+        id_value:
+          type: string
+          required: true
+          example: "SF1"
+        qualifier1_key:
+          type: string
+          required: false
+          example: null
+        qualifier1_value:
+          type: string
+          required: false
+          example: null
+        qualifier2_key:
+          type: string
+          required: false
+          example: null
+        qualifier2_value:
+          type: string
+          required: false
+          example: null
+        include_deleted_cross_ref:
+          type: string
+          required: true
+          example: "0"
+
+
+    post:
+    
+    
+/multientities:
+    
+  /associate:
+    type:
+      collection:
+        get200RespExample: !include examples/associates-get-result-example.json
+        get200RespSchema: associates
+        postReqExample: !include examples/associate-post-example.json
+        postReqSchema: associate
+    get: 
+      queryParameters: 
+        entity_type_key: 
+          type: string 
+          required: true 
+          example: "PROJ" 
+        id_type_key: 
+          type: string 
+          required: true 
+          example: "SF_Proj" 
+        id_value: 
+          type: string 
+          required: true 
+          example: "a27c0000005RQliAAG" 
+        include_deleted_cross_ref: 
+          type: string 
+          required: true 
+          example: "0" 
+ 
+    post: 

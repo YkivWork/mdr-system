@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mule xmlns:tracking="http://www.mulesoft.org/schema/mule/ee/tracking" xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:apikit="http://www.mulesoft.org/schema/mule/apikit" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:dw="http://www.mulesoft.org/schema/mule/ee/dw" xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns:spring="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/apikit http://www.mulesoft.org/schema/mule/apikit/current/mule-apikit.xsd
+http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.1.xsd
+http://www.mulesoft.org/schema/mule/ee/dw http://www.mulesoft.org/schema/mule/ee/dw/current/dw.xsd
+http://www.mulesoft.org/schema/mule/ee/tracking http://www.mulesoft.org/schema/mule/ee/tracking/current/mule-tracking-ee.xsd">
+    <flow name="mdr-main">
+        <http:listener config-ref="httpListenerConfig" path="/api/v1/*" doc:name="HTTP" />
+        <apikit:router config-ref="apiConfig" doc:name="APIkit Router" />
+    </flow>
+    <flow name="mdr-console">
+        <http:listener config-ref="httpListenerConfig" path="/console/*" doc:name="HTTP" />
+        <apikit:console config-ref="apiConfig" doc:name="APIkit Console" />
+    </flow>
+    <flow name="get:/health-check:apiConfig">
+        <flow-ref name="healthCheckOverall" doc:name="healthCheckOverall" />
+    </flow>
+    <flow name="post:/entities:application/json:apiConfig">
+        <set-property propertyName="Content-Type" value="application/json" doc:name="Property" />
+        <flow-ref name="entity-storeInstance_Sub_Flow" doc:name="entity-storeInstance_Sub_Flow" />
+    </flow>
+    <flow name="get:/entities/associate:apiConfig">
+        <flow-ref name="entity-getCrossReference_Sub_Flow" doc:name="entity-getCrossReference_Sub_Flow" />
+    </flow>
+    <flow name="get:/multientities/associate:apiConfig">
+        <flow-ref name="multiEntity-getCrossReference_Sub_Flow" doc:name="multiEntity-getCrossReference_Sub_Flow"/>
+    </flow>
+    <flow name="post:/entities/associate:application/json:apiConfig">
+        <set-property propertyName="Content-Type" value="application/json" doc:name="Property"/>
+        <flow-ref name="entity-storeCrossReference_Sub_Flow" doc:name="entity-storeCrossReference_Sub_Flow"/>
+
+    </flow>
+</mule>

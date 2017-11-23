@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Code Push Change 8/10/17 -->
+<mule xmlns:secure-property-placeholder="http://www.mulesoft.org/schema/mule/secure-property-placeholder"
+	xmlns:db="http://www.mulesoft.org/schema/mule/db"
+	xmlns:validation="http://www.mulesoft.org/schema/mule/validation"
+	xmlns:apikit="http://www.mulesoft.org/schema/mule/apikit"
+	xmlns:vm="http://www.mulesoft.org/schema/mule/vm"
+	xmlns:smtp="http://www.mulesoft.org/schema/mule/smtp"
+	xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns="http://www.mulesoft.org/schema/mule/core" 
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" 
+	xmlns:spring="http://www.springframework.org/schema/beans" 
+	xmlns:sfdc="http://www.mulesoft.org/schema/mule/sfdc" 
+	xmlns:context="http://www.springframework.org/schema/context" 
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xsi:schemaLocation="http://www.mulesoft.org/schema/mule/secure-property-placeholder http://www.mulesoft.org/schema/mule/secure-property-placeholder/current/mule-secure-property-placeholder.xsd
+http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/current/mule-db.xsd
+http://www.mulesoft.org/schema/mule/validation http://www.mulesoft.org/schema/mule/validation/current/mule-validation.xsd
+http://www.mulesoft.org/schema/mule/apikit http://www.mulesoft.org/schema/mule/apikit/current/mule-apikit.xsd
+http://www.mulesoft.org/schema/mule/vm http://www.mulesoft.org/schema/mule/vm/current/mule-vm.xsd
+http://www.mulesoft.org/schema/mule/smtp http://www.mulesoft.org/schema/mule/smtp/current/mule-smtp.xsd
+http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-current.xsd
+http://www.mulesoft.org/schema/mule/sfdc http://www.mulesoft.org/schema/mule/sfdc/current/mule-sfdc.xsd
+http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-current.xsd
+http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd">
+
+    <db:generic-config name="MDR_Database_Configuration" url="jdbc:sqlserver://${mdr.sqlserverHost}:${mdr.sqlserverPort};databaseName=${mdr.databaseName};user=${mdr.user};password=${mdr.password};" driverClassName="${mdr.driver}" doc:name="Generic Database Configuration"/>
+
+    <http:listener-config name="httpListenerConfig" host="0.0.0.0" port="${http.private.port}" doc:name="HTTP Listener Configuration" />
+
+    <apikit:config name="apiConfig" raml="mdr.raml" consoleEnabled="false" doc:name="Router" />
+
+    <!-- <context:property-placeholder location="common.properties, mule.${mule.env:dev}.properties"/> -->
+    <!--   <context:property-placeholder location="${mule.env:dev}.properties"/>
+ 	-->
+ 	<secure-property-placeholder:config name="Secure_Property_Placeholder" key="${runtime.key}" location="${mule.env}.properties" doc:name="Secure Property Placeholder"/>
+ 	    <configuration defaultExceptionStrategy-ref="global_error_handling" doc:name="Configuration">
+        <http:config useTransportForUris="false"/>
+    </configuration>
+</mule>

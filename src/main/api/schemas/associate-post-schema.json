@@ -1,0 +1,112 @@
+{
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "id": "http://example.com/root.json",
+    "properties": {
+        "add_end_date": {
+            "default": "2017-02-23",
+            "description": "An explanation about the purpose of this instance.",
+            "id": "http://example.com/root.json/add_end_date",
+            "title": "The Add_end_date schema.",
+            "type": ["null","string"]
+        },
+        "add_id_type_key": {
+            "default": "ORA_Acct",
+            "description": "An explanation about the purpose of this instance.",
+            "id": "http://example.com/root.json/add_id_type_key",
+            "title": "The Add_id_type_key schema.",
+            "type": "string"
+        },
+        "add_id_value": {
+            "default": "ORA1",
+            "description": "An explanation about the purpose of this instance.",
+            "id": "http://example.com/root.json/add_id_value",
+            "title": "The Add_id_value schema.",
+            "type": "string"
+        },
+        "add_qualifier1_key": {
+            "default": "VAT",
+            "description": "An explanation about the purpose of this instance.",
+            "id": "http://example.com/root.json/add_qualifier1_key",
+            "title": "The Add_qualifier1_key schema.",
+            "type": ["null","string"]
+        },
+        "add_qualifier1_value": {
+            "default": "VAT1",
+            "description": "An explanation about the purpose of this instance.",
+            "id": "http://example.com/root.json/add_qualifier1_value",
+            "title": "The Add_qualifier1_value schema.",
+            "type": ["null","string"]
+        },
+        "add_qualifier2_key": {
+            "default": null,
+            "description": "An explanation about the purpose of this instance.",
+            "id": "http://example.com/root.json/add_qualifier2_key",
+            "title": "The Add_qualifier2_key schema.",
+            "type": ["null","string"]
+        },
+        "add_qualifier2_value": {
+            "default": null,
+            "description": "An explanation about the purpose of this instance.",
+            "id": "http://example.com/root.json/add_qualifier2_value",
+            "title": "The Add_qualifier2_value schema.",
+            "type": ["null","string"]
+        },
+        "add_start_date": {
+            "default": "2016-11-29",
+            "description": "An explanation about the purpose of this instance.",
+            "id": "http://example.com/root.json/add_start_date",
+            "title": "The Add_start_date schema.",
+            "type": ["null", "string"]
+        },
+        "entity_type_key": {
+            "default": "ORG",
+            "description": "An explanation about the purpose of this instance.",
+            "id": "http://example.com/root.json/entity_type_key",
+            "title": "The Entity_type_key schema.",
+            "type": "string"
+        },
+        "on_id_type_key": {
+            "default": "SFDC_Acct",
+            "description": "An explanation about the purpose of this instance.",
+            "id": "http://example.com/root.json/on_id_type_key",
+            "title": "The On_id_type_key schema.",
+            "type": "string"
+        },
+        "on_id_value": {
+            "default": "SF1",
+            "description": "An explanation about the purpose of this instance.",
+            "id": "http://example.com/root.json/on_id_value",
+            "title": "The On_id_value schema.",
+            "type": "string"
+        },
+        "on_qualifier1_key": {
+            "default": null,
+            "description": "An explanation about the purpose of this instance.",
+            "id": "http://example.com/root.json/on_qualifier1_key",
+            "title": "The On_qualifier1_key schema.",
+            "type": ["null","string"]
+        },
+        "on_qualifier1_value": {
+            "default": null,
+            "description": "An explanation about the purpose of this instance.",
+            "id": "http://example.com/root.json/on_qualifier1_value",
+            "title": "The On_qualifier1_value schema.",
+            "type": ["null","string"]
+        },
+        "on_qualifier2_key": {
+            "default": null,
+            "description": "An explanation about the purpose of this instance.",
+            "id": "http://example.com/root.json/on_qualifier2_key",
+            "title": "The On_qualifier2_key schema.",
+            "type": ["null","string"]
+        },
+        "on_qualifier2_value": {
+            "default": null,
+            "description": "An explanation about the purpose of this instance.",
+            "id": "http://example.com/root.json/on_qualifier2_value",
+            "title": "The On_qualifier2_value schema.",
+            "type": ["null","string"]
+        }
+    },
+    "type": "object"
+}

@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:dw="http://www.mulesoft.org/schema/mule/ee/dw" xmlns:tracking="http://www.mulesoft.org/schema/mule/ee/tracking" xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xmlns:spring="http://www.springframework.org/schema/beans" 
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-current.xsd
+http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/ee/tracking http://www.mulesoft.org/schema/mule/ee/tracking/current/mule-tracking-ee.xsd
+http://www.mulesoft.org/schema/mule/ee/dw http://www.mulesoft.org/schema/mule/ee/dw/current/dw.xsd">
+    <choice-exception-strategy name="global_error_handling">
+        <catch-exception-strategy when="#[exception.causedBy(org.mule.module.apikit.exception.NotFoundException)]" doc:name="404: Caused by (org.mule.module.apikit.exception.NotFoundException)">
+            <set-property propertyName="http.status" value="404" doc:name="Http Status"/>
+            <set-variable variableName="errorMsg" value="Resource Can't Be Found" doc:name="Error Message"/>
+            <set-payload value="RESOURCE_NOT_FOUND" doc:name="Error Code"/>
+            <flow-ref name="response_sub_flow" doc:name="response_sub_flow"/>
+        </catch-exception-strategy>
+        <catch-exception-strategy when="#[exception.causedBy(org.mule.module.apikit.exception.MethodNotAllowedException)]" doc:name="405: Caused by (org.mule.module.apikit.exception.MethodNotAllowedException)">
+            <set-property propertyName="http.status" value="405" doc:name="Http Status"/>
+            <set-variable variableName="errorMsg" value="Incorrect Method Defined" doc:name="Error Message"/>
+            <set-payload value="METHOD_NOT_ALLOWED" doc:name="Error Code"/>
+            <flow-ref name="response_sub_flow" doc:name="response_sub_flow"/>
+        </catch-exception-strategy>
+        <catch-exception-strategy when="#[exception.causedBy(org.mule.module.apikit.exception.UnsupportedMediaTypeException)]" doc:name="415: Caused by (org.mule.module.apikit.exception.UnsupportedMediaTypeException)">
+            <set-property propertyName="http.status" value="415" doc:name="Http Status"/>
+            <set-variable variableName="errorMsg" value="Wrong Media Type as Request" doc:name="Error Message"/>
+            <set-payload value="UNSUPPORTED_MEDIA_TYPE" doc:name="Error Code"/>
+            <flow-ref name="response_sub_flow" doc:name="response_sub_flow"/>
+        </catch-exception-strategy>
+        <catch-exception-strategy when="#[exception.causedBy(org.mule.module.apikit.exception.NotAcceptableException)]" doc:name="406: Caused by (org.mule.module.apikit.exception.NotAcceptableException)">
+            <set-property propertyName="http.status" value="406" doc:name="Http Status"/>
+            <set-variable variableName="errorMsg" value="Request Can't Be Accepted" doc:name="Error Message"/>
+            <set-payload value="NOT_ACCEPTABLE" doc:name="Error Code"/>
+            <flow-ref name="response_sub_flow" doc:name="response_sub_flow"/>
+        </catch-exception-strategy>
+        <catch-exception-strategy when="#[exception.causedBy(org.mule.module.apikit.exception.BadRequestException)]" doc:name="400: Caused by (org.mule.module.apikit.exception.BadRequestException)">
+            <set-property propertyName="http.status" value="400" doc:name="Http Status"/>
+            <set-variable variableName="errorMsg" value="Bad Input" doc:name="Error Message"/>
+            <set-payload value="BAD_REQUEST" doc:name="Error Code"/>
+            <flow-ref name="response_sub_flow" doc:name="response_sub_flow"/>
+        </catch-exception-strategy>
+        <catch-exception-strategy when="#[exception.causedBy(javax.ws.rs.InternalServerErrorException)]" doc:name="500: Caused by (javax.ws.rs.InternalServerErrorException)">
+            <set-variable variableName="errorMsg" value="Internal Server Can't Be Reached" doc:name="Error Message"/>
+            <set-payload value="INTERNAL_SERVER_ERROR" doc:name="Error Code"/>
+            <flow-ref name="error_sub_flow" doc:name="error_sub_flow"/>
+        </catch-exception-strategy>
+        <catch-exception-strategy when="#[exception.causedBy(com.mulesoft.weave.mule.exception.WeaveExecutionException)]" doc:name="Dataweave Exception">
+            <set-variable variableName="errorMsg" value="Failed to execute Dataweave, Invalid payload" doc:name="Error Message"/>
+            <set-payload value="ERROR_EXECUTING_DATAWEAVE" doc:name="Error Code"/>
+            <flow-ref name="error_sub_flow" doc:name="error_sub_flow"/>
+        </catch-exception-strategy>
+        <catch-exception-strategy when="#[exception.causedBy(java.lang.IllegalArgumentException)]" doc:name="Database Invalid Query">
+            <set-variable variableName="errorMsg" value="Invalid Query Format" doc:name="Error Message"/>
+            <set-payload value="INVALID_QUERY_STRUCTURE_FOR_DATABASE" doc:name="Error Code"/>
+            <flow-ref name="error_sub_flow" doc:name="error_sub_flow"/>
+        </catch-exception-strategy>
+        <catch-exception-strategy when="#[exception.causedBy(com.microsoft.sqlserver.jdbc.SQLServerException)]" doc:name="Database Invalid Statement">
+            <set-variable variableName="errorMsg" value="Invalid Statement Operation for the Database" doc:name="Error Message"/>
+            <set-payload value="INVALID_STATEMENT_FOR_DATABASE" doc:name="Error Code"/>
+            <flow-ref name="error_sub_flow" doc:name="error_sub_flow"/>
+        </catch-exception-strategy>
+        <catch-exception-strategy when="#[exception.causedBy(org.mule.module.db.internal.domain.connection.ConnectionCreationException)]" doc:name="Database Connection Exception">
+            <set-variable variableName="errorMsg" value="Unable to connect to Database, Invalid Ceredentials" doc:name="Error Message"/>
+            <set-payload value="DATABASE_CONNECTION_ERROR" doc:name="Error Code"/>
+            <flow-ref name="error_sub_flow" doc:name="error_sub_flow"/>
+        </catch-exception-strategy>
+        <catch-exception-strategy when="#[exception.causedBy(java.util.concurrent.TimeoutException)]" doc:name="Timeout Exception">
+            <set-property propertyName="http.status" value="502" doc:name="Http Status"/>
+            <set-variable variableName="errorMsg" value="Unable to connect to upstream service. Request timed out." doc:name="Error Message"/>
+            <set-payload value="REQUEST_TIMED_OUT" doc:name="Error Code"/>
+            <flow-ref name="response_sub_flow" doc:name="response_sub_flow"/>
+        </catch-exception-strategy>
+        <catch-exception-strategy when="#[exception.causedBy(java.util.NoSuchElementException)]" doc:name="No Such Element Exception">
+            <set-property propertyName="http.status" value="502" doc:name="http.status"/>
+            <set-variable variableName="errorMsg" value="Can't Find The Requested Element" doc:name="Error Message"/>
+            <set-payload value="NO_SUCH_ELEMENT" doc:name="Error Code"/>
+            <flow-ref name="response_sub_flow" doc:name="response_sub_flow"/>
+        </catch-exception-strategy>
+        <catch-exception-strategy doc:name="Default">
+            <set-variable variableName="errorMsg" value="Internal Code Error" doc:name="Error Message"/>
+            <set-payload value="INTERNAL_ERROR_CAN'T_BE_RESOLVED" doc:name="Error Code"/>
+            <flow-ref name="error_sub_flow" doc:name="error_sub_flow"/>
+        </catch-exception-strategy>
+    </choice-exception-strategy>
+    <sub-flow name="error_sub_flow">
+        <set-property propertyName="http.status" value="500" doc:name="Http Status"/>
+        <flow-ref name="response_sub_flow" doc:name="response_sub_flow"/>
+    </sub-flow>
+    <sub-flow name="response_sub_flow">
+        <set-variable variableName="errorDesc" value="#[org.apache.commons.lang.StringEscapeUtils.escapeJavaScript(exception.?cause.?message or exception.?cause or exception)]" doc:name="Error Description"/>
+        <logger message="Error Summary  [#[exception.getSummaryMessage()]]" level="DEBUG" doc:name="Logger"/>
+        <logger message="Error Code [#[payload]]     -----------        Error Message [#[flowVars.errorMsg]]        -----------          Error Description [#[flowVars.errorDesc]]" level="ERROR" doc:name="Logger"/>
+        <set-variable variableName="errorSet" value="#[true]" doc:name="Error Raised"/>
+        <dw:transform-message doc:name="Transform Message">
+            <dw:set-payload><![CDATA[%dw 1.0
+%output application/json
+---
+{ error:{
+	error_code: payload,
+	error_msg: flowVars.errorMsg,
+	error_time: now as :string { format: "yyyy-MM-dd' || 'HH:mm:ssZ" },
+	error_description: flowVars.errorDesc
+}}]]></dw:set-payload>
+        </dw:transform-message>
+    </sub-flow>
+</mule>

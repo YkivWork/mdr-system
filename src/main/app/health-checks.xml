@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:db="http://www.mulesoft.org/schema/mule/db"
+	xmlns:scripting="http://www.mulesoft.org/schema/mule/scripting"
+	xmlns:json="http://www.mulesoft.org/schema/mule/json" xmlns="http://www.mulesoft.org/schema/mule/core"
+xmlns:metadata="http://www.mulesoft.org/schema/mule/metadata"
+xmlns:dw="http://www.mulesoft.org/schema/mule/ee/dw"
+xmlns:tracking="http://www.mulesoft.org/schema/mule/ee/tracking"
+xmlns:http="http://www.mulesoft.org/schema/mule/http"
+xmlns:context="http://www.springframework.org/schema/context"
+xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+xmlns:spring="http://www.springframework.org/schema/beans"
+xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+xsi:schemaLocation="http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/current/mule-db.xsd
+http://www.mulesoft.org/schema/mule/scripting http://www.mulesoft.org/schema/mule/scripting/current/mule-scripting.xsd
+http://www.mulesoft.org/schema/mule/json http://www.mulesoft.org/schema/mule/json/current/mule-json.xsd
+http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-current.xsd
+http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-current.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/ee/tracking http://www.mulesoft.org/schema/mule/ee/tracking/current/mule-tracking-ee.xsd
+http://www.mulesoft.org/schema/mule/ee/dw http://www.mulesoft.org/schema/mule/ee/dw/current/dw.xsd">
+
+    <flow name="healthCheckOverall">
+        <enricher target="#[variable:mdrHealth]" doc:name="mdrHealth">
+            <flow-ref name="healthCheckMdr" doc:name="healthCheckMdr"/>
+        </enricher>
+        <logger level="DEBUG" doc:name="DEBUG"/>
+        <dw:transform-message doc:name="Overall Health">
+            <dw:set-payload><![CDATA[%dw 1.0
+%output application/json
+%var mdr=read(flowVars.mdrHealth, "application/json")
+%function compositeHealth(health) health reduce ('ok' when $$ == 'ok' and $ == 'ok' otherwise 'down')
+---
+{
+	health: compositeHealth([mdr.health]),
+	checks: {
+		mdr: {
+			path: '/mdr-health',
+			health: mdr.health,
+			(details: mdr.details) when mdr.details?
+		}
+	}
+}]]></dw:set-payload>
+            <dw:set-property propertyName="http.status"><![CDATA[%dw 1.0
+%output application/java
+%var mdr=read(flowVars.mdrHealth, "application/json")
+%function compositeHealth(health) health reduce ('ok' when $$ == 'ok' and $ == 'ok' otherwise 'down')
+---
+200 when compositeHealth([mdr.health]) == 'ok' otherwise 500]]></dw:set-property>
+        </dw:transform-message>
+        <logger message="Overall Health Check: #[dw('payload.health'), 'application/json']" level="INFO" doc:name="INFO"/>
+        <logger message="#[message.payloadAs(java.lang.String)]" level="INFO" doc:name="DEBUG"/>
+    </flow>
+
+    <flow name="healthCheckMdr">
+        <db:stored-procedure config-ref="MDR_Database_Configuration" doc:name="Database">
+            <db:parameterized-query><![CDATA[{ call PRC_GetCrossReference(:EntityTypeKey,:IDTypeKey,:IDValue,:Qualifier1Key,:Qualifier1Value,:Qualifier2Key,:Qualifier2Value,:IncludeDeletedCrossRef) }]]></db:parameterized-query>
+            <db:in-param name="Qualifier1Key" value="Test"/>
+            <db:in-param name="Qualifier1Value" value="Test"/>
+            <db:in-param name="Qualifier2Key" value="Test"/>
+            <db:in-param name="Qualifier2Value" value="Test"/>
+            <db:in-param name="IncludeDeletedCrossRef" value="Y"/>
+            <db:in-param name="EntityTypeKey" value="PROJ"/>
+            <db:in-param name="IDTypeKey" value="SFDC_7"/>
+            <db:in-param name="IDValue" value="SFDC"/>
+
+        </db:stored-procedure>
+
+        <dw:transform-message doc:name="Health">
+            <dw:set-payload><![CDATA[%dw 1.0
+%output application/json
+---
+{
+	health: 'ok',
+	details: 'Connection to MDR is healthy'
+}]]></dw:set-payload>
+        </dw:transform-message>
+        <logger message="MDR Health Check: #[dw('payload.health'), 'application/json']" level="DEBUG" doc:name="DEBUG"/>
+        <catch-exception-strategy doc:name="Catch Exception Strategy">
+            <set-variable variableName="errorDetail" value="There is a problem connecting to MDR" doc:name="errorDetail"/>
+            <dw:transform-message doc:name="Unhealthy">
+                <dw:set-payload><![CDATA[%dw 1.0
+%output application/json
+---
+{
+	health: 'failed',
+	details: flowVars.errorDetail
+}]]></dw:set-payload>
+                <dw:set-property propertyName="http.status"><![CDATA[%dw 1.0
+%output application/java
+---
+500]]></dw:set-property>
+            </dw:transform-message>
+            <logger message="MDR Health Check: #[dw('payload.health'), 'application/json']" level="DEBUG" doc:name="DEBUG"/>
+        </catch-exception-strategy>
+    </flow>
+</mule>

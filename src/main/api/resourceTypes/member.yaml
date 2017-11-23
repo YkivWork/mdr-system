@@ -1,0 +1,25 @@
+get?:
+  responses: 
+    200:
+      body: 
+        application/json:
+          example: <<memberExample>>
+          schema: <<memberSchema>>
+put?:
+  body: 
+    application/json:
+      example: <<memberExample>>
+      schema: <<memberSchema>>
+  responses: 
+    200:
+      body: 
+        application/json:
+          example: |
+            {"message": "Updated successfully the <<resourcePathName | !singularize>>"}
+delete?:
+  responses: 
+    200:
+      body: 
+        application/json:
+          example: |
+            {"message": "Deleted/Retired successfully the <<resourcePathName | !singularize>>"}

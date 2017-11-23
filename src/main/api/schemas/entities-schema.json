@@ -1,0 +1,137 @@
+{
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "id": "http://example.com/root.json",
+    "items": {
+        "id": "http://example.com/root.json/0",
+        "properties": {
+            "descriptor1": {
+                "default": "HighPriority",
+                "description": "An explanation about the purpose of this instance.",
+                "id": "http://example.com/root.json/0/descriptor1",
+                "title": "The Descriptor1 schema.",
+                "type": "string"
+            },
+            "descriptor2": {
+                "default": "Hot",
+                "description": "An explanation about the purpose of this instance.",
+                "id": "http://example.com/root.json/0/descriptor2",
+                "title": "The Descriptor2 schema.",
+                "type": "string"
+            },
+            "descriptor3": {
+                "default": "IncludePrint",
+                "description": "An explanation about the purpose of this instance.",
+                "id": "http://example.com/root.json/0/descriptor3",
+                "title": "The Descriptor3 schema.",
+                "type": "string"
+            },
+            "descriptor4": {
+                "default": "OnlineDistribution",
+                "description": "An explanation about the purpose of this instance.",
+                "id": "http://example.com/root.json/0/descriptor4",
+                "title": "The Descriptor4 schema.",
+                "type": "string"
+            },
+            "descriptor5": {
+                "default": "Test1",
+                "description": "An explanation about the purpose of this instance.",
+                "id": "http://example.com/root.json/0/descriptor5",
+                "title": "The Descriptor5 schema.",
+                "type": "string"
+            },
+            "descriptor6": {
+                "default": "test21",
+                "description": "An explanation about the purpose of this instance.",
+                "id": "http://example.com/root.json/0/descriptor6",
+                "title": "The Descriptor6 schema.",
+                "type": "string"
+            },
+            "descriptor7": {
+                "default": "test4",
+                "description": "An explanation about the purpose of this instance.",
+                "id": "http://example.com/root.json/0/descriptor7",
+                "title": "The Descriptor7 schema.",
+                "type": "string"
+            },
+            "descriptor8": {
+                "default": "test7",
+                "description": "An explanation about the purpose of this instance.",
+                "id": "http://example.com/root.json/0/descriptor8",
+                "title": "The Descriptor8 schema.",
+                "type": "string"
+            },
+            "descriptor9": {
+                "default": "test6",
+                "description": "An explanation about the purpose of this instance.",
+                "id": "http://example.com/root.json/0/descriptor9",
+                "title": "The Descriptor9 schema.",
+                "type": "string"
+            },
+            "end_date": {
+                "default": "2017-03-14",
+                "description": "An explanation about the purpose of this instance.",
+                "id": "http://example.com/root.json/0/end_date",
+                "title": "The End_date schema.",
+                "type": "string"
+            },
+            "entity_type_key": {
+                "default": "ORG",
+                "description": "An explanation about the purpose of this instance.",
+                "id": "http://example.com/root.json/0/entity_type_key",
+                "title": "The Entity_type_key schema.",
+                "type": "string"
+            },
+            "id_type_key": {
+                "default": "Aria_Acct",
+                "description": "An explanation about the purpose of this instance.",
+                "id": "http://example.com/root.json/0/id_type_key",
+                "title": "The Id_type_key schema.",
+                "type": "string"
+            },
+            "id_value": {
+                "default": "Aria2",
+                "description": "An explanation about the purpose of this instance.",
+                "id": "http://example.com/root.json/0/id_value",
+                "title": "The Id_value schema.",
+                "type": "string"
+            },
+            "qualifier1_key": {
+                "default": "CURRENCY",
+                "description": "An explanation about the purpose of this instance.",
+                "id": "http://example.com/root.json/0/qualifier1_key",
+                "title": "The Qualifier1_key schema.",
+                "type": ["string","null"]
+            },
+            "qualifier1_value": {
+                "default": "JPY",
+                "description": "An explanation about the purpose of this instance.",
+                "id": "http://example.com/root.json/0/qualifier1_value",
+                "title": "The Qualifier1_value schema.",
+                "type": ["string","null"]
+            },
+            "qualifier2_key": {
+                "default": "LEGALENT",
+                "description": "An explanation about the purpose of this instance.",
+                "id": "http://example.com/root.json/0/qualifier2_key",
+                "title": "The Qualifier2_key schema.",
+                "type": ["string","null"]
+            },
+            "qualifier2_value": {
+                "default": "LLC",
+                "description": "An explanation about the purpose of this instance.",
+                "id": "http://example.com/root.json/0/qualifier2_value",
+                "title": "The Qualifier2_value schema.",
+                "type": ["string","null"]
+            },
+            "start_date": {
+                "default": "2016-11-20",
+                "description": "An explanation about the purpose of this instance.",
+                "id": "http://example.com/root.json/0/start_date",
+                "title": "The Start_date schema.",
+                "type": "string"
+            }
+        },
+        "type": "object"
+    },
+    "type": "array"
+}

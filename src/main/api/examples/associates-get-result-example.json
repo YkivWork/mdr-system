@@ -1,0 +1,36 @@
+[
+  {
+    "entity_type_key": "ORG",
+    "on_id_type_key": "SFDC_Acct",
+    "on_id_value": "SF1",
+    "on_qualifier1_key": null,
+    "on_qualifier1_value":  null,
+    "on_qualifier2_key":  null,
+    "on_qualifier2_value":  null, 
+    "add_id_type_key": "ORA_Acct",
+    "add_id_value": "ORA1",
+    "add_qualifier1_key": "VAT",
+    "add_qualifier1_value": "VAT1",
+    "add_qualifier2_key": null,
+    "add_qualifier2_value": null, 
+    "add_start_date": "2016-11-29",
+    "add_end_date": "2017-02-23"
+  },
+  {
+    "entity_type_key": "ORG",
+    "on_id_type_key": "SFDC_Acct",
+    "on_id_value": "SF1",
+    "on_qualifier1_key": null,
+    "on_qualifier1_value":  null,
+    "on_qualifier2_key":  null,
+    "on_qualifier2_value":  null, 
+    "add_id_type_key": "SFDC_Acct",
+    "add_id_value": "SF2",
+    "add_qualifier1_key": null,
+    "add_qualifier1_value": null,
+    "add_qualifier2_key": null,
+    "add_qualifier2_value": null, 
+    "add_start_date": "2016-11-29",
+    "add_end_date": "2017-02-23"
+  }
+]

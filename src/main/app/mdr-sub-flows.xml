@@ -1,0 +1,172 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:tracking="http://www.mulesoft.org/schema/mule/ee/tracking" xmlns:dw="http://www.mulesoft.org/schema/mule/ee/dw" xmlns:json="http://www.mulesoft.org/schema/mule/json" xmlns:db="http://www.mulesoft.org/schema/mule/db" xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xmlns:spring="http://www.springframework.org/schema/beans" 
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-current.xsd
+http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/current/mule-db.xsd
+http://www.mulesoft.org/schema/mule/json http://www.mulesoft.org/schema/mule/json/current/mule-json.xsd
+http://www.mulesoft.org/schema/mule/ee/dw http://www.mulesoft.org/schema/mule/ee/dw/current/dw.xsd
+http://www.mulesoft.org/schema/mule/ee/tracking http://www.mulesoft.org/schema/mule/ee/tracking/current/mule-tracking-ee.xsd">
+
+    <sub-flow name="entity-getCrossReference_Sub_Flow">
+        <set-payload value="#[message.inboundProperties.'http.query.params']" doc:name="Set Payload"/>
+
+        <db:stored-procedure config-ref="MDR_Database_Configuration" doc:name="Database">
+            <db:parameterized-query><![CDATA[{ :returnValue = call PRC_GetCrossReference(:EntityTypeKey,:IDTypeKey,:IDValue,:Qualifier1Key,:Qualifier1Value,:Qualifier2Key,:Qualifier2Value,:IncludeDeletedCrossRef) }]]></db:parameterized-query>
+            <db:in-param name="EntityTypeKey" value="#[payload.entity_type_key]"/>
+            <db:in-param name="IDTypeKey" value="#[payload.id_type_key]"/>
+            <db:in-param name="IDValue" value="#[payload.id_value]"/>
+            <db:in-param name="Qualifier1Key" value="#[payload.qualifier1_key]"/>
+            <db:in-param name="Qualifier1Value" value="#[payload.qualifier1_value]"/>
+            <db:in-param name="Qualifier2Key" value="#[payload.qualifier2_key]"/>
+            <db:in-param name="Qualifier2Value" value="#[payload.qualifier2_value]"/>
+            <db:in-param name="IncludeDeletedCrossRef" type="SMALLINT" value="#[payload.include_deleted_cross_ref]"/>
+            <db:out-param name="returnValue" type="INTEGER"/>
+        </db:stored-procedure>
+
+        <logger message="GetCrossReference Response: #[message.payloadAs(java.lang.String)]" level="INFO" category="com.merrillcorp.q2c" doc:name="Logger"/>
+                        
+        <choice doc:name="Choice">
+            <when expression="#[payload['returnValue'] == -1]">
+                <set-property propertyName="http.status" value="400" doc:name="Property"/>
+                <set-payload value="MDR Error Code: #[payload['returnValue']]" doc:name="Set Payload"/>
+            </when>
+            <otherwise>
+                <dw:transform-message doc:name="Transform Message">
+                    <dw:input-payload mimeType="application/java" />
+                    <dw:set-payload resource="classpath:transform-sql-return.dwl"/>
+                </dw:transform-message>
+            </otherwise>
+        </choice>
+    </sub-flow>
+    <sub-flow name="multiEntity-getCrossReference_Sub_Flow">
+        <set-payload value="#[message.inboundProperties.'http.query.params']" doc:name="Set Payload"/>
+        <db:stored-procedure config-ref="MDR_Database_Configuration" doc:name="Database">
+            <db:parameterized-query><![CDATA[{ :returnValue = call GetMultiEntityCrossReference(:EntityTypeKey,:IDTypeKey,:IDValue,:IncludeDeletedCrossRef,:ErrorNumber,:ErrorMsg ) }]]></db:parameterized-query>
+            <db:in-param name="EntityTypeKey" value="#[payload.entity_type_key]"/>
+            <db:in-param name="IDTypeKey" value="#[payload.id_type_key]"/>
+            <db:in-param name="IDValue" value="#[payload.id_value]"/>
+            <db:in-param name="IncludeDeletedCrossRef" type="SMALLINT" value="#[payload.include_deleted_cross_ref]"/>
+            <db:out-param name="returnValue" type="INTEGER"/>
+            <db:out-param name="ErrorNumber" type="INTEGER"/>
+            <db:out-param name="ErrorMsg" type="VARCHAR"/>
+        </db:stored-procedure>
+        <logger message="GetMultiCrossReference Response: #[message.payloadAs(java.lang.String)]" level="INFO" doc:name="Logger"/>
+        <choice doc:name="Choice">
+            <when expression="#[payload['returnValue'] == -1]">
+                <set-property propertyName="http.status" value="400" doc:name="Property"/>
+                <set-payload value="MDR Error Code: #[payload['returnValue']]" doc:name="Set Payload"/>
+            </when>
+            <otherwise>
+                <dw:transform-message doc:name="Transform Message">
+                    <dw:set-payload resource="classpath:transform-sql-return.dwl"/>
+                </dw:transform-message>
+                <logger message="GetMultiCrossReference Response: #[message.payloadAs(java.lang.String)]" level="INFO" doc:name="Logger"/>
+            </otherwise>
+        </choice>
+        <logger level="INFO" doc:name="Logger"/>
+    </sub-flow>
+
+    <sub-flow name="entity-storeInstance_Sub_Flow">
+        <json:json-to-object-transformer returnClass="java.util.HashMap" mimeType="application/java" doc:name="JSON to Object"/>
+        <db:stored-procedure config-ref="MDR_Database_Configuration" doc:name="Database">
+            <db:parameterized-query><![CDATA[{ :returnValue = call PRC_UpsertInstance(:EntityTypeKey,:IDTypeKey,:IDValue,:Qualifier1Key,:Qualifier1Value,:Qualifier2Key,:Qualifier2Value,:StartDate,:EndDate,:Descriptor1,:Descriptor2,:Descriptor3,:Descriptor4,:Descriptor5,:Descriptor6,:Descriptor7,:Descriptor8,:Descriptor9) }]]></db:parameterized-query>
+            <db:in-param name="EntityTypeKey" value="#[payload.entity_type_key]"/>
+            <db:in-param name="IDTypeKey" value="#[payload.id_type_key]"/>
+            <db:in-param name="IDValue" value="#[payload.id_value]"/>
+            <db:in-param name="Qualifier1Key" value="#[payload.qualifier1_key]"/>
+            <db:in-param name="Qualifier1Value" value="#[payload.qualifier1_value]"/>
+            <db:in-param name="Qualifier2Key" value="#[payload.qualifier2_key]"/>
+            <db:in-param name="Qualifier2Value" value="#[payload.qualifier2_value]"/>
+            <db:in-param name="StartDate" value="#[payload.start_date]"/>
+            <db:in-param name="EndDate" value="#[payload.end_date]"/>
+            <db:in-param name="Descriptor1" value="#[payload.descriptor1]"/>
+            <db:in-param name="Descriptor2" value="#[payload.descriptor2]"/>
+            <db:in-param name="Descriptor3" value="#[payload.descriptor3]"/>
+            <db:in-param name="Descriptor4" value="#[payload.descriptor4]"/>
+            <db:in-param name="Descriptor5" value="#[payload.descriptor5]"/>
+            <db:in-param name="Descriptor6" value="#[payload.descriptor6]"/>
+            <db:in-param name="Descriptor7" value="#[payload.descriptor7]"/>
+            <db:in-param name="Descriptor8" value="#[payload.descriptor8]"/>
+            <db:in-param name="Descriptor9" value="#[payload.descriptor9]"/>
+            <db:out-param name="returnValue" type="INTEGER"/>
+        </db:stored-procedure>
+
+        <logger message="UpsertInstance Response: #[message.payloadAs(java.lang.String)]" level="INFO" category="com.merrillcorp.q2c" doc:name="Logger"/>
+                        
+        <choice doc:name="Choice">
+            <when expression="#[payload['returnValue'] == -1]">
+                <set-property propertyName="http.status" value="400" doc:name="Property"/>
+                <set-payload value="MDR Error Code: #[payload['returnValue']]" doc:name="Set Payload"/>
+            </when>
+            <otherwise>        
+                <dw:transform-message doc:name="Transform Message">
+                    <dw:input-payload mimeType="application/java" />
+                    <dw:set-payload resource="classpath:transform-sql-return.dwl"/>
+                </dw:transform-message>
+            </otherwise>
+        </choice>
+    </sub-flow>
+
+    <sub-flow name="entity-storeCrossReference_Sub_Flow">
+        <dw:transform-message doc:name="Transform Message">
+            <dw:set-payload><![CDATA[%dw 1.0
+%output application/java
+//Other date formats will work, but for now just restrict to year-month-date.
+%function asDate(value) value as :date {format: "yyyy-MM-dd"} when value != null otherwise null
+---
+{
+  entity_type_key: payload.entity_type_key,
+  on_id_type_key: payload.on_id_type_key,
+  on_id_value: payload.on_id_value,
+  on_qualifier1_key: payload.on_qualifier1_key,
+  on_qualifier1_value: payload.on_qualifier1_value,
+  on_qualifier2_key: payload.on_qualifier2_key,
+  on_qualifier2_value: payload.on_qualifier2_value,
+  add_id_type_key: payload.add_id_type_key,
+  add_id_value: payload.add_id_value,
+  add_qualifier1_key: payload.add_qualifier1_key,
+  add_qualifier1_value: payload.add_qualifier1_value,
+  add_qualifier2_key: payload.add_qualifier2_key,
+  add_qualifier2_value: payload.add_qualifier2_value,
+  add_start_date: asDate(payload.add_start_date),
+  add_end_date: asDate(payload.add_end_date)
+}]]></dw:set-payload>
+        </dw:transform-message>
+        
+        <db:stored-procedure config-ref="MDR_Database_Configuration" doc:name="Database">
+            <db:parameterized-query><![CDATA[{ :returnValue = call PRC_AddCrossReference(:EntityTypeKey,:ON_IDTypeKey,:ON_IDValue,:ON_Qualifier1Key,:ON_Qualifier1Value,:ON_Qualifier2Key,:ON_Qualifier2Value,:ADD_IDTypeKey,:ADD_IDValue,:ADD_Qualifier1Key,:ADD_Qualifier1Value,:ADD_Qualifier2Key,:ADD_Qualifier2Value,:ADD_StartDate,:ADD_EndDate) }]]></db:parameterized-query>
+            <db:in-param name="EntityTypeKey" value="#[payload.entity_type_key]"/>
+            <db:in-param name="ON_IDTypeKey" value="#[payload.on_id_type_key]"/>
+            <db:in-param name="ON_IDValue" value="#[payload.on_id_value]"/>
+            <db:in-param name="ON_Qualifier1Key" value="#[payload.on_qualifier1_key]"/>
+            <db:in-param name="ON_Qualifier1Value" value="#[payload.on_qualifier1_value]"/>
+            <db:in-param name="ON_Qualifier2Key" value="#[payload.on_qualifier2_key]"/>
+            <db:in-param name="ON_Qualifier2Value" value="#[payload.on_qualifier2_value]"/>
+            <db:in-param name="ADD_IDTypeKey" value="#[payload.add_id_type_key]"/>
+            <db:in-param name="ADD_IDValue" value="#[payload.add_id_value]"/>
+            <db:in-param name="ADD_Qualifier1Key" value="#[payload.add_qualifier1_key]"/>
+            <db:in-param name="ADD_Qualifier1Value" value="#[payload.add_qualifier1_value]"/>
+            <db:in-param name="ADD_Qualifier2Key" value="#[payload.add_qualifier2_key]"/>
+            <db:in-param name="ADD_Qualifier2Value" value="#[payload.add_qualifier2_value]"/>
+            <db:in-param name="ADD_StartDate" value="#[payload.add_start_date]"/>
+            <db:in-param name="ADD_EndDate" value="#[payload.add_end_date]"/>
+            <db:out-param name="returnValue" type="INTEGER"/>
+        </db:stored-procedure>
+
+        <logger message="AddCrossReference Response: #[message.payloadAs(java.lang.String)]" level="INFO" category="com.merrillcorp.q2c" doc:name="Logger"/>
+                        
+        <choice doc:name="Choice">
+            <when expression="#[payload['returnValue'] == -1]">
+                <set-property propertyName="http.status" value="400" doc:name="Property"/>
+                <set-payload value="MDR Error Code: #[payload['returnValue']]" doc:name="Set Payload"/>
+            </when>
+            <otherwise>        
+                <set-payload doc:name="Set Payload" value="&quot;#[]&quot;"/>
+            </otherwise>
+        </choice>
+    </sub-flow>
+
+</mule>
